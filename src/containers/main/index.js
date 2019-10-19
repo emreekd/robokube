@@ -9,7 +9,10 @@ import PodList from '../../components/podlist';
 import ImageChangePanel from '../../components/imagechangepanel';
 import ViewConfigPanel from '../../components/viewconfigpanel';
 
+import NodeSelector from '../../components/nodeselector';
+
 export default class Main extends React.Component {
+    
     constructor(props) {
         super(props)
         this.state = {
@@ -35,6 +38,9 @@ export default class Main extends React.Component {
                             <i style={{fontSize:42}} class="fas fa-robot"></i>
                             <span style={{marginLeft: 10,verticalAlign: 'super',fontSize: 14,fontWeight:'bolder'}}>ROBO KUBE</span>
                         </div>
+                    </Row>
+                    <Row>
+                        <NodeSelector />
                     </Row>
                     <div>
                         <PodList />
