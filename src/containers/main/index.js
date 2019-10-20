@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Spinner, Container } from 'react-bootstrap';
 
 import PortForwardPanel from '../../components/portforwardpanel'
 import PodList from '../../components/podlist';
@@ -11,8 +11,10 @@ import ViewConfigPanel from '../../components/viewconfigpanel';
 
 import NodeSelector from '../../components/nodeselector';
 
+import KubeContext from '../../context/kubecontext'
+
 export default class Main extends React.Component {
-    
+
     constructor(props) {
         super(props)
         this.state = {
@@ -29,40 +31,65 @@ export default class Main extends React.Component {
                 '       - "1000000"\n  '
         }
     }
+    componentDidMount() {
+        var vm = this;
+        setTimeout(function () {
+            vm.setState({ sideBarHeight: vm.sidebar.clientHeight })
+        }, 20)
+    }
     render() {
         return (
-            <Row>
-                <Col sm={2}>
-                    <Row>
-                        <div style={{width:'100%', backgroundColor:'#ffa502',padding:15}}>
-                            <i style={{fontSize:42}} class="fas fa-robot"></i>
-                            <span style={{marginLeft: 10,verticalAlign: 'super',fontSize: 14,fontWeight:'bolder'}}>ROBO KUBE</span>
+            <KubeContext.Provider
+                value={{
+                    clusterNodes: this.state.clusterNodes,
+                    podList: this.state.podList,
+                    selectedClusterNode: this.state.selectedClusterNode,
+                    selectedPod: this.state.selectedPod
+                }}>
+                <Row>
+                    <Col sm={2} ref={(sidebar) => this.sidebar = sidebar} >
+                        <Row>
+                            <div style={{ width: '100%', backgroundColor: '#ffa502', padding: 15 }}>
+                                <i style={{ fontSize: 42 }} className="fas fa-robot"></i>
+                                <span style={{ marginLeft: 10, verticalAlign: 'super', fontSize: 14, fontWeight: 'bolder' }}>ROBO KUBE</span>
+                            </div>
+                        </Row>
+                        <Row>
+                            <NodeSelector />
+                        </Row>
+                        <div>
+                            <PodList podList={this.state.podList} />
                         </div>
-                    </Row>
-                    <Row>
-                        <NodeSelector />
-                    </Row>
-                    <div>
-                        <PodList />
-                    </div>
-                </Col>
-                <Col>
-                    <Row style={{ paddingLeft: 0, backgroundColor: '#eccc68', fontWeight: 600 }}>
-                        <Col sm={3}>
-                            <PortForwardPanel />
-                        </Col>
-                        {this.state.podConfig ? 
-                        <Col>
-                            <ViewConfigPanel config={this.state.podConfig} />
-                        </Col> : null
+                    </Col>
+                    <Col>
+                        {
+                            this.state.selectedPod ?
+                                <Row style={{ paddingLeft: 0, backgroundColor: '#eccc68', fontWeight: 600, minHeight: this.state.sideBarHeight }}>
+                                    <Col sm={3}>
+                                        <PortForwardPanel />
+                                    </Col>
+                                    {this.state.podConfig ?
+                                        <Col>
+                                            <ViewConfigPanel config={this.state.podConfig} />
+                                        </Col> : null
+                                    }
+                                    <Col>
+                                        <ImageChangePanel />
+                                    </Col>
+                                </Row> :
+                                <Row style={{ paddingLeft: 0, backgroundColor: '#eccc68', fontWeight: 600, alignItems: 'center', minHeight: this.state.sideBarHeight }}>
+                                    <Container>
+                                        <Spinner animation="grow" size="sm" />
+                                        <div>
+                                        </div>
+                                        <p style={{ fontSize: 14, fontWeight: 300 }}>Please select a node</p>
+                                    </Container>
+                                </Row>
                         }
-                        <Col>
-                            <ImageChangePanel />
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
 
+                    </Col>
+                </Row>
+            </KubeContext.Provider>
         );
     }
 }
