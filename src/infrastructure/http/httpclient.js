@@ -21,4 +21,13 @@ export default class HttpClient{
             });
         });
     }
+    get(url){
+        return new Promise((resolve,reject) =>{
+            axios.get(url).then((response) => {
+                resolve(response.data);
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
 }

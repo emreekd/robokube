@@ -20,7 +20,7 @@ export default class ViewConfigPanel extends React.Component {
                 <Row>
                     <Col>
                         <p style={{ fontSize: 14, margin: 0 }}>Config YAML</p>
-                        <SyntaxHighlighter language="yaml" customStyle={{ margin: '0 auto', width: 300, backgroundColor: '#f7f1e3', textAlign: 'left' }} style={docco}>
+                        <SyntaxHighlighter language="json" customStyle={{ margin: '0 auto', width: 300, backgroundColor: '#f7f1e3', textAlign: 'left' }} style={docco}>
                             {this.props.config}
                         </SyntaxHighlighter>
                     </Col>
